@@ -98,9 +98,11 @@ const LoginPage = () => {
     setFailed(false);
     try {
       const query = `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-      const response = await fetch('/api/session', {
-        method: 'POST',
-        body: new URLSearchParams(code.length ? `${query}&code=${code}` : query),
+      const response = await fetch("/api/session", {
+        method: "POST",
+        body: new URLSearchParams(
+          code.length ? `${query}&code=${code}` : query
+        ),
       });
       if (response.ok) {
         const user = await response.json();
@@ -119,7 +121,11 @@ const LoginPage = () => {
   };
 
   const handleTokenLogin = useCatch(async (token) => {
-    const response = await fetch(`/api/session?token=${encodeURIComponent(token)}`);
+    const response = await fetch(
+      `/api/session?token=${encodeURIComponent(
+        token
+      )}`
+    );
     if (response.ok) {
       const user = await response.json();
       dispatch(sessionActions.updateUser(user));
@@ -130,7 +136,7 @@ const LoginPage = () => {
   });
 
   const handleOpenIdLogin = () => {
-    document.location = '/api/session/openid/auth';
+    document.location = "/api/session/openid/auth";
   };
 
   useEffect(() => nativePostMessage('authentication'), []);

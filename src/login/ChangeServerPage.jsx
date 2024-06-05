@@ -11,7 +11,7 @@ const currentServer = `${window.location.protocol}//${window.location.host}`;
 
 const officialServers = [
   currentServer,  
-  'http://108.181.186.122:8082',
+  'http://108.181.195.185:8082',
   'http://localhost:3000',
 ];
 

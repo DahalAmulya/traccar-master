@@ -1,31 +1,48 @@
-import React from 'react';
+import React, { useState } from "react";
 import {
-  Divider, List, ListItemButton, ListItemIcon, ListItemText,
-} from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CreateIcon from '@mui/icons-material/Create';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import FolderIcon from '@mui/icons-material/Folder';
-import PersonIcon from '@mui/icons-material/Person';
-import StorageIcon from '@mui/icons-material/Storage';
-import BuildIcon from '@mui/icons-material/Build';
-import PeopleIcon from '@mui/icons-material/People';
-import TodayIcon from '@mui/icons-material/Today';
-import PublishIcon from '@mui/icons-material/Publish';
-import SmartphoneIcon from '@mui/icons-material/Smartphone';
-import HelpIcon from '@mui/icons-material/Help';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useTranslation } from '../../common/components/LocalizationProvider';
+  Divider,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+} from "@mui/material";
 import {
-  useAdministrator, useManager, useRestriction,
-} from '../../common/util/permissions';
-import useFeatures from '../../common/util/useFeatures';
+  ExpandLess,
+  ExpandMore,
+  Settings as SettingsIcon,
+  Business as BusinessIcon,
+  DriveEta as DriveEtaIcon,
+  Notifications as NotificationsIcon,
+  Create as CreateIcon,
+  Folder as FolderIcon,
+  Person as PersonIcon,
+  Storage as StorageIcon,
+  Build as BuildIcon,
+  People as PeopleIcon,
+  Today as TodayIcon,
+  Publish as PublishIcon,
+  Smartphone as SmartphoneIcon,
+  Help as HelpIcon,
+  Campaign as CampaignIcon,
+  MenuOutlined,
+} from "@mui/icons-material";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useTranslation } from "../../common/components/LocalizationProvider";
+import {
+  useAdministrator,
+  useManager,
+  useRestriction,
+} from "../../common/util/permissions";
+import useFeatures from "../../common/util/useFeatures";
+import WorkIcon from "@mui/icons-material/Work";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import MoneyIcon from "@mui/icons-material/Money";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import AlarmIcon from "@mui/icons-material/Alarm";
 
-const MenuItem = ({
-  title, link, icon, selected,
-}) => (
+const MenuItem = ({ title, link, icon, selected }) => (
   <ListItemButton key={link} component={Link} to={link} selected={selected}>
     <ListItemIcon>{icon}</ListItemIcon>
     <ListItemText primary={title} />
@@ -36,100 +53,226 @@ const SettingsMenu = () => {
   const t = useTranslation();
   const location = useLocation();
 
-  const readonly = useRestriction('readonly');
+  const readonly = useRestriction("readonly");
   const admin = useAdministrator();
   const manager = useManager();
   const userId = useSelector((state) => state.session.user.id);
-  const supportLink = useSelector((state) => state.session.server.attributes.support);
+  const supportLink = useSelector(
+    (state) => state.session.server.attributes.support
+  );
 
   const features = useFeatures();
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [generalOpen, setGeneralOpen] = useState(false);
+  const [masterOpen, setMasterOpen] = useState(false);
+
+  const handleSettingsClick = () => {
+    setSettingsOpen(!settingsOpen);
+  };
+
+  const handleGeneralClick = () => {
+    setGeneralOpen(!generalOpen);
+  };
+
+  const handleMasterOpen = () => {
+    setMasterOpen(!masterOpen);
+  };
 
   return (
     <>
       <List>
         <MenuItem
-          title={t('sharedPreferences')}
+          title={t("sharedPreferences")}
           link="/settings/preferences"
           icon={<SettingsIcon />}
-          selected={location.pathname === '/settings/preferences'}
+          selected={location.pathname === "/settings/preferences"}
         />
         {!readonly && (
           <>
             <MenuItem
-              title={t('sharedNotifications')}
+              title={t("sharedNotifications")}
               link="/settings/notifications"
               icon={<NotificationsIcon />}
-              selected={location.pathname.startsWith('/settings/notification')}
+              selected={location.pathname.startsWith("/settings/notification")}
             />
+
+            <ListItemButton onClick={handleSettingsClick}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+              {settingsOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton onClick={handleGeneralClick}>
+                  <ListItemText primary="General" inset />
+                  {generalOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={generalOpen} timeout="auto" unmountOnExit>
+                  <List component="div" style={{ marginLeft: "70px" }}>
+                    <MenuItem
+                      title={"Companies"}
+                      link="/settings/companies"
+                      icon={<BusinessIcon />}
+                      selected={location.pathname.startsWith(
+                        "/settings/companies"
+                      )}
+                    />
+                    <MenuItem
+                      title={"Alert"}
+                      link="/setting/alert"
+                      icon={<NotificationsIcon />}
+                      selected={location.pathname.startsWith(
+                        "/settings/companies"
+                      )}
+                    />
+                    {!features.disableDrivers && (
+                      <MenuItem
+                        title={t("sharedDrivers")}
+                        link="/settings/drivers"
+                        icon={<DriveEtaIcon />}
+                        selected={location.pathname.startsWith(
+                          "/settings/drivers"
+                        )}
+                      />
+                    )}
+
+                    <MenuItem
+                      title={"Reminder Rule"}
+                      link="/setting/alert"
+                      icon={<AlarmIcon />}
+                      selected={location.pathname.startsWith(
+                        "/settings/companies"
+                      )}
+                    />
+                  </List>
+                </Collapse>
+              </List>
+
+              <List component="div" disablePadding>
+                <ListItemButton onClick={handleMasterOpen}>
+                  <ListItemText primary="Master" inset />
+                  {masterOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={masterOpen} timeout="auto" unmountOnExit>
+                  <List component="div" style={{ marginLeft: "70px" }}>
+                    <MenuItem
+                      title={"Job"}
+                      link="/settings/companies"
+                      icon={<WorkIcon />}
+                      selected={location.pathname.startsWith(
+                        "/settings/companies"
+                      )}
+                    />
+                    {!features.disableDrivers && (
+                      <MenuItem
+                        title={"Announcement"}
+                        link="/settings/drivers"
+                        icon={<AnnouncementIcon />}
+                        selected={location.pathname.startsWith(
+                          "/settings/drivers"
+                        )}
+                      />
+                    )}
+                    {!features.disableDrivers && (
+                      <MenuItem
+                        title={"Classify Trips"}
+                        link="/settings/drivers"
+                        icon={<DirectionsCarIcon />}
+                        selected={location.pathname.startsWith(
+                          "/settings/drivers"
+                        )}
+                      />
+                    )}
+                    {!features.disableDrivers && (
+                      <MenuItem
+                        title={"Expense"}
+                        link="/settings/drivers"
+                        icon={<MoneyIcon />}
+                        selected={location.pathname.startsWith(
+                          "/settings/drivers"
+                        )}
+                      />
+                    )}
+                  </List>
+                </Collapse>
+              </List>
+            </Collapse>
+
             <MenuItem
-              title={t('settingsUser')}
+              title={t("settingsUser")}
               link={`/settings/user/${userId}`}
               icon={<PersonIcon />}
               selected={location.pathname === `/settings/user/${userId}`}
             />
             <MenuItem
-              title={t('deviceTitle')}
+              title={t("deviceTitle")}
               link="/settings/devices"
               icon={<SmartphoneIcon />}
-              selected={location.pathname.startsWith('/settings/device')}
+              selected={location.pathname.startsWith("/settings/device")}
             />
             <MenuItem
-              title={t('sharedGeofences')}
+              title={t("sharedGeofences")}
               link="/geofences"
               icon={<CreateIcon />}
-              selected={location.pathname.startsWith('/settings/geofence')}
+              selected={location.pathname.startsWith("/settings/geofence")}
             />
             {!features.disableGroups && (
               <MenuItem
-                title={t('settingsGroups')}
+                title={t("settingsGroups")}
                 link="/settings/groups"
                 icon={<FolderIcon />}
-                selected={location.pathname.startsWith('/settings/group')}
+                selected={location.pathname.startsWith("/settings/group")}
               />
             )}
-            {!features.disableDrivers && (
-              <MenuItem
-                title={t('sharedDrivers')}
-                link="/settings/drivers"
-                icon={<PersonIcon />}
-                selected={location.pathname.startsWith('/settings/driver')}
-              />
-            )}
+
             {!features.disableCalendars && (
               <MenuItem
-                title={t('sharedCalendars')}
+                title={t("sharedCalendars")}
                 link="/settings/calendars"
                 icon={<TodayIcon />}
-                selected={location.pathname.startsWith('/settings/calendar')}
+                selected={location.pathname.startsWith("/settings/calendar")}
               />
             )}
             {!features.disableComputedAttributes && (
               <MenuItem
-                title={t('sharedComputedAttributes')}
+                title={t("sharedComputedAttributes")}
                 link="/settings/attributes"
                 icon={<StorageIcon />}
-                selected={location.pathname.startsWith('/settings/attribute')}
+                selected={location.pathname.startsWith("/settings/attribute")}
               />
             )}
             {!features.disableMaintenance && (
               <MenuItem
-                title={t('sharedMaintenance')}
+                title={"Notification"}
                 link="/settings/maintenances"
-                icon={<BuildIcon />}
-                selected={location.pathname.startsWith('/settings/maintenance')}
+                icon={<NotificationsIcon />}
+                selected={location.pathname.startsWith("/settings/maintenance")}
               />
             )}
             {!features.disableSavedCommands && (
               <MenuItem
-                title={t('sharedSavedCommands')}
+                title={t("sharedSavedCommands")}
                 link="/settings/commands"
                 icon={<PublishIcon />}
-                selected={location.pathname.startsWith('/settings/command')}
+                selected={location.pathname.startsWith("/settings/command")}
+              />
+            )}
+            {!features.disableGroups && (
+              <MenuItem
+                title={"Notification"}
+                link="/settings/notificaitons"
+                icon={<NotificationsIcon />}
+                selected={location.pathname.startsWith(
+                  "/settings/notifications"
+                )}
               />
             )}
             {supportLink && (
               <MenuItem
-                title={t('settingsSupport')}
+                title={t("settingsSupport")}
                 link={supportLink}
                 icon={<HelpIcon />}
               />
@@ -144,24 +287,27 @@ const SettingsMenu = () => {
             {admin && (
               <>
                 <MenuItem
-                  title={t('serverAnnouncement')}
+                  title={t("serverAnnouncement")}
                   link="/settings/announcement"
                   icon={<CampaignIcon />}
-                  selected={location.pathname === '/settings/announcement'}
+                  selected={location.pathname === "/settings/announcement"}
                 />
                 <MenuItem
-                  title={t('settingsServer')}
+                  title={t("settingsServer")}
                   link="/settings/server"
                   icon={<StorageIcon />}
-                  selected={location.pathname === '/settings/server'}
+                  selected={location.pathname === "/settings/server"}
                 />
               </>
             )}
             <MenuItem
-              title={t('settingsUsers')}
+              title={t("settingsUsers")}
               link="/settings/users"
               icon={<PeopleIcon />}
-              selected={location.pathname.startsWith('/settings/user') && location.pathname !== `/settings/user/${userId}`}
+              selected={
+                location.pathname.startsWith("/settings/user") &&
+                location.pathname !== `/settings/user/${userId}`
+              }
             />
           </List>
         </>

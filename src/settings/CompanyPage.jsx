@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const DriverPage = ({ showForm, setShowForm }) => {
+const CompanyPage = ({ showForm, setShowForm }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -25,7 +25,7 @@ const DriverPage = ({ showForm, setShowForm }) => {
 
     try {
       const response = await axios.post(
-        "http://108.181.186.122:3000/company",
+        "http://108.181.195.185:3000/company",
         formData
       );
 
@@ -53,13 +53,13 @@ const DriverPage = ({ showForm, setShowForm }) => {
             <button style={styles.closeButton} onClick={handleClose}>
               &times;
             </button>
-            <h2>Add Driver</h2>
+            <h2>Add Company</h2>
             <form onSubmit={handleSubmit} style={styles.form}>
               <div style={styles.inputGroup}>
-                <label htmlFor="driverName">Driver Name:</label>
+                <label htmlFor="companyName">Company Name:</label>
                 <input
                   type="text"
-                  id="driverName"
+                  id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   style={styles.input}
@@ -78,9 +78,9 @@ const DriverPage = ({ showForm, setShowForm }) => {
                 />
               </div>
               <div style={styles.inputGroup}>
-                <label htmlFor="contact">Contact</label>
+                <label htmlFor="phone">Phone Number:</label>
                 <input
-                  id="contact"
+                  id="phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   style={styles.input}
@@ -88,9 +88,9 @@ const DriverPage = ({ showForm, setShowForm }) => {
                 />
               </div>
               <div style={styles.inputGroup}>
-                <label htmlFor="location">Location:</label>
+                <label htmlFor="pan">PAN:</label>
                 <input
-                  id="location"
+                  id="pan"
                   value={pan}
                   onChange={(e) => setPan(e.target.value)}
                   style={styles.input}
@@ -206,4 +206,4 @@ const styles = {
   },
 };
 
-export default DriverPage;
+export default CompanyPage;

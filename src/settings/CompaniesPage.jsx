@@ -17,14 +17,14 @@ import TableShimmer from "../common/components/TableShimmer";
 import SearchHeader, { filterByKeyword } from "./components/SearchHeader";
 import { useRestriction } from "../common/util/permissions";
 import useSettingsStyles from "./common/useSettingsStyles";
-import DriverPage from "./DriverPage";
+import CompanyPage from "./CompanyPage";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
 import axios from "axios";
 
-const DriversPage = () => {
+const CompaniesPage = () => {
   const classes = useSettingsStyles();
   const t = useTranslation();
 
@@ -38,10 +38,11 @@ const DriversPage = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState({}); //this is a dictionary
 
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://108.181.186.122:3000/company");
+      const response = await axios.get("http://108.181.195.185:3000/company");
       setItems(response.data);
       setLoading(false);
     } catch (error) {
@@ -56,7 +57,7 @@ const DriversPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://108.181.186.122:3000/company/${id}`);
+      await axios.delete(`http://108.181.195.185:3000/company/${id}`);
       fetchData();
     } catch (error) {
       console.error("Error deleting data:", error);
@@ -71,7 +72,7 @@ const DriversPage = () => {
   const handleEditSave = async () => {
     try {
       await axios.put(
-        `http://108.181.186.122:3000/company/${editData.company_id}`,
+        `http://108.181.195.185:3000/company/${editData.company_id}`,
         editData
       );
       setEditDialogOpen(false);
@@ -86,62 +87,48 @@ const DriversPage = () => {
     setEditData({ ...editData, [name]: value });
   };
 
+
   const columns = useMemo(
     () => [
       {
-        accessorKey: "driver_name",
-        header: "Driver Name",
-        size: 100,
+        accessorKey: "company_id",
+        header: "Company ID",
+        size: 150,
       },
       {
-        accessorKey: "driver_number",
-        header: " Driver Number",
-        size: 75,
+        accessorKey: "name",
+        header: "Company Name",
+        size: 200,
       },
       {
-        accessorKey: "Tag_via",
-        header: "Tag via",
-        size: 75,
+        accessorKey: "address",
+        header: "Company Address",
+        size: 200,
       },
       {
-        accessorKey: "designation",
-        header: "Designation",
-        size: 75,
+        accessorKey: "phone",
+        header: "Phone",
+        size: 150,
       },
       {
-        accessorKey: "state ",
+        accessorKey: "pan",
+        header: "PAN",
+        size: 150,
+      },
+      {
+        accessorKey: "country",
+        header: "Country",
+        size: 150,
+      },
+      {
+        accessorKey: "state",
         header: "State",
-        size: 75,
+        size: 150,
       },
       {
-        accessorKey: "age",
-        header: "Age",
-        size: 75,
-      },
-      {
-        accessorKey: "driver_experience",
-        header: "Driver Experience",
-        size: 75,
-      },
-      {
-        accessorKey: "license_to_drive",
-        header: "License to Drive",
-        size: 75,
-      },
-      {
-        accessorKey: "has_user",
-        header: "Has User",
-        size: 75,
-      },
-      {
-        accessorKey: "username",
-        header: "Username",
-        size: 75,
-      },
-      {
-        accessorKey: "password",
-        header: "Password",
-        size: 100,
+        accessorKey: "city",
+        header: "City",
+        size: 150,
       },
       {
         id: "actions",
@@ -201,7 +188,7 @@ const DriversPage = () => {
           alignItems: "center",
         }}
       >
-        <h2>Driver</h2>
+        <h2>Companies</h2>
       </div>
       {loading ? (
         <TableShimmer columns={limitCommands ? 3 : 6} endAction />
@@ -226,7 +213,7 @@ const DriversPage = () => {
           +
         </button>
       </div>
-      <DriverPage
+      <CompanyPage
         showForm={showPage}
         setShowForm={(show) => {
           setShowPage(show);
@@ -234,7 +221,7 @@ const DriversPage = () => {
         }}
       />
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Edit Driver</DialogTitle>
+        <DialogTitle>Edit Company</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
@@ -313,4 +300,4 @@ const DriversPage = () => {
   );
 };
 
-export default DriversPage;
+export default CompaniesPage;
